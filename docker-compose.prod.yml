@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: nadeemagadi/collabai-frontend:latest
+    ports:
+      - "4000:4000"
+    depends_on:
+      - backend
+    networks:
+      - collabai-network
+    restart: unless-stopped
+
+  backend:
+    image: nadeemagadi/collabai-backend:latest
+    ports:
+      - "8002:8002"
+    env_file:
+      - ./server/.env.prod
+    environment:
+      - NODE_ENV=prod
+    depends_on:
+      - mongodb
+    networks:
+      - collabai-network
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - collabai-network
+    environment:
+      - MONGO_INITDB_DATABASE=admin
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=x0G319JFlnWNgs
+    command: mongod --auth --bind_ip_all
+    restart: unless-stopped
+
+networks:
+  collabai-network:
+    driver: bridge
+
+volumes:
+  mongodb_data: 
