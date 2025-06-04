@@ -33,9 +33,6 @@ jobs:
 
           cd docker-collabai
 
-          echo "🔧 Running docker.sh to install Docker and Docker Compose"
-          chmod +x docker.sh && ./docker.sh
-
           echo "🐳 Running Docker Compose"
           docker compose -f docker-compose.prod.yml up -d --build
 
